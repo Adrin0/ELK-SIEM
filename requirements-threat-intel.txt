@@ -1,0 +1,8 @@
+flask
+requests
+python-dotenv
+elasticsearch==7.17.0
+netaddr
+flask-restful
+pandas
+pytest
