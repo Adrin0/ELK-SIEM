@@ -15,14 +15,14 @@ sudo curl -L https://github.com/docker/compose/releases/download/1.29.2/docker-c
 sudo chmod +x /usr/local/bin/docker-compose
 
 echo "Setting up Elasticsearch GPG key and repository..."
-wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -
-echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | tee -a /etc/apt/sources.list.d/elastic-7.x.list
+sudo wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-archive-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/elasticsearch-archive-keyring.gpg] https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-7.x.list
 
 echo "Installing ELK Stack components..."
-apt update && apt install -y elasticsearch logstash kibana
+sudo apt update && sudo apt install -y elasticsearch logstash kibana
 
 echo "Configuring Elasticsearch..."
-cat <<EOF > /etc/elasticsearch/elasticsearch.yml
+sudo tee -a /etc/elasticsearch/elasticsearch.yml <<EOF
 network.host: 0.0.0.0
 discovery.type: single-node
 EOF
@@ -35,10 +35,10 @@ EOF
 
 echo "Setting up Logstash configuration..."
 mkdir -p /etc/logstash/conf.d
-cat <<EOF > /etc/logstash/conf.d/logstash.conf
+sudo tee -a /etc/logstash/conf.d/logstash.conf <<EOF
 input {
   beats {
-    port => 5044
+    port => 5045
   }
 }
 
@@ -51,14 +51,14 @@ EOF
 
 echo "Installing Filebeat..."
 apt install -y filebeat
-cat <<EOF > /etc/filebeat/filebeat.yml
+sudo tee -a /etc/filebeat/filebeat.yml <<EOF
 filebeat.inputs:
   - type: log
     paths:
       - /var/log/*.log
 
 output.logstash:
-  hosts: ["localhost:5044"]
+  hosts: ["localhost:5045"]
 EOF
 
 echo "Enabling and starting services..."
@@ -68,8 +68,8 @@ systemctl enable --now logstash
 systemctl enable --now filebeat
 
 echo "Setting up Docker Compose for ELK stack..."
-mkdir -p /opt/elk
-cat <<EOF > /opt/elk/docker-compose.yml
+sudo mkdir -p /opt/elk
+sudo tee -a /opt/elk/docker-compose.yml <<EOF
 version: '3.3'
 services:
   elasticsearch:
@@ -77,22 +77,22 @@ services:
     environment:
       - discovery.type=single-node
     ports:
-      - "9200:9200"
+      - "9201:9200"
 
   logstash:
     image: docker.elastic.co/logstash/logstash:7.10.1
     ports:
-      - "5044:5044"
+      - "5045:5044"
     volumes:
       - ./logstash-config:/usr/share/logstash/config
 
   kibana:
     image: docker.elastic.co/kibana/kibana:7.10.1
     ports:
-      - "5601:5601"
+      - "5602:5601"
 EOF
 
 echo "Starting Docker-based ELK stack..."
-cd /opt/elk && docker-compose up -d
+cd /opt/elk && sudo docker-compose up -d
 
 echo "Setup complete! Access Kibana at http://<VM_IP>:5601"

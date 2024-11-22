@@ -1,0 +1,25 @@
+version: '3.7'
+
+services:
+  abuseipdb:
+    image: your-abuseipdb-image
+    container_name: abuseipdb
+    environment:
+      - API_KEY=YOUR_ABUSEIPDB_API_KEY
+    ports:
+      - "8080:8080"
+
+  virustotal:
+    image: your-virustotal-image
+    container_name: virustotal
+    environment:
+      - API_KEY=YOUR_VIRUSTOTAL_API_KEY
+    ports:
+      - "8081:8081"
+
+  automation:
+    image: your-automation-scripts-image
+    container_name: automation
+    volumes:
+      - ./scripts:/scripts
+    command: /scripts/run.sh
