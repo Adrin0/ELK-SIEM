@@ -151,6 +151,7 @@ Ensure each setup is completed in its respective environment before proceeding w
     sudo filebeat test config        #Validate the configuration to ensure no error
 
     ```
+    
 ## Testing & Validation
 
 - Access Kibana: `http://<ELK_VM_IP>:5602`
