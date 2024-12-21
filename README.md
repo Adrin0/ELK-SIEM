@@ -22,7 +22,9 @@ This project involves setting up an incident response platform using Docker, Vir
 
 ## Project Overview
 
-The Incident Response Platform is a lab environment designed for security monitoring, threat detection, and automated responses. This project is built using Docker containers and VirtualBox VMs to simulate an enterprise network environment, capturing logs, enriching them with threat intelligence, and responding to potential incidents.
+- Capture and analyze logs.
+- Enrich logs with threat intelligence.
+- Automate incident responses.
 
 ## Requirements
 
@@ -50,43 +52,21 @@ All VMs are connected to an internal network (`AIRTIP-Net`) configured with DHCP
 ## Setup Instructions
 
 ### Prerequisites
-- **Oracle VirtualBox**: For VM management.
-- **Ubuntu Server**: For ELK Stack and Threat Intelligence VMs.
-- **Kali Linux**: For attack simulation.
-- **Docker & Docker Compose**: To run containerized services.
+1. Install **VirtualBox**.
+2. Download VM images:
+   - [Ubuntu Server](https://ubuntu.com/download/server)
+   - [Kali Linux](https://www.kali.org/get-kali/#kali-virtual-machines)
 
-### Steps to Deploy
 ### VM Configuration
-**Download VM Images**
+1. **Resources**:
+   - ELK-Server: 4 Cores, 8GB RAM, 100GB Storage.
+   - Threat-Intel-VM: 2 Cores, 4GB RAM, 25GB Storage.
+   - Kali-VM: 2 Cores, 2GB RAM, 25GB Storage.
 
-- [Ubuntu Server](https://ubuntu.com/download/server)
-- [Kali Linux](https://www.kali.org/get-kali/#kali-virtual-machines)
+2. **Network**:
+   - Adapter 1: NAT (Internet).
+   - Adapter 2: Internal network (`AIRTIP-Net`).
 
-**For each VM, ensure the following hardware specifications:**
-- **ELK-Server**: 4 Cores, 8gb RAM, 25gb Storage
-- **Threat-Intel-Server**: 2 Cores, 4gb RAM, 25gb Storage
-- **Kali VM**: 2 Cores, 2gb RAM, 25gb Storage
-- **Network**: Internal network adapter set to `AIRTIP-Net` and NAT network adapter enabled
-
-
-### Network Configuration
-
-#### **Step 1: Configure VMs for Internet Access**
-
-1. **Attach a NAT Network Adapter to each VM**
-    - Open the VirtualBox settings for each VM.
-    - Under the Network tab, ensure the first adapter is set to NAT for internet access.
-
-#### **Step 2: Create and Configure an Internal Network**
-
-1. **Create an Internal Network in VirtualBox**
-    - Open File > Host Network Manager in VirtualBox.
-    - Configure the IP range (e.g., 192.168.56.1/24) and enable DHCP.
-    - (Optional) Use PowerShell to configure DHCP:
-    ```powershell
-    VBoxManage dhcpserver add --network=AIRTIP-Net --server-ip=192.168.56.1 --lower-ip=192.168.56.2 --upper-ip=192.168.56.24 --netmask=255.255.255.0 --enable
-    ```
-2. **Assign Static IPs to each VM**
 **IP Addresses**
 - **ELK-Server**: 192.168.56.7
 - **Threat-Intel-Server**: 192.168.56.8
@@ -99,7 +79,7 @@ All VMs are connected to an internal network (`AIRTIP-Net`) configured with DHCP
    **Ubuntu**:
       - [Ubuntu Setup](docs/Ubuntu-Setup.md)
 
-   **Kali/Ubuntu**:
+   **Kali**:
       - [Kali SSH Setup](docs/Kali-SSH-Setup.md)
 - On Kali machine, SSH into each server.
    ```bash
@@ -171,3 +151,9 @@ Ensure each setup is completed in its respective environment before proceeding w
     sudo filebeat test config        #Validate the configuration to ensure no error
 
     ```
+## Testing & Validation
+
+- Access Kibana: `http://<ELK_VM_IP>:5602`
+- Verify Threat Intel API integration:
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{"ip": "8.8.8.8"}' http://localhost:5000/enrich
