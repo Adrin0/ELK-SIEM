@@ -171,3 +171,10 @@ Ensure each setup is completed in its respective environment before proceeding w
     sudo filebeat test config        #Validate the configuration to ensure no error
 
     ```
+
+## Testing & Validation
+
+- Access Kibana: `http://<ELK_VM_IP>:5602`
+- Verify Threat Intel API integration:
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{"ip": "8.8.8.8"}' http://localhost:5000/enrich
