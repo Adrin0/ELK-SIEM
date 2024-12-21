@@ -55,7 +55,7 @@ All VMs are connected to an internal network (`AIRTIP-Net`) configured with DHCP
 - **Kali Linux**: For attack simulation.
 - **Docker & Docker Compose**: To run containerized services.
 
-### Steps to Deploy
+## Steps to Deploy
 ### VM Configuration
 **Download VM Images**
 
