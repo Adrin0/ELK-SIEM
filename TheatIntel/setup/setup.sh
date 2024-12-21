@@ -14,20 +14,16 @@ echo "Installing docker-compose"
 sudo curl -L https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 
-echo "Setting up project directories..."
-mkdir -p /opt/threat-intel /opt/incident-response
-cd /opt/threat-intel
+#echo "Setting up project directories..."
+#mkdir -p /opt/threat-intel /opt/incident-response
+#cd /opt/threat-intel
 
-echo "Cloning the project repository..."
-git clone https://github.com/Adrin0/ELK-SIEM.git .
-cd ELK-SIEM
+#echo "Creating Python virtual environment..."
+#python3 -m venv /opt/threat-intel/env
+#source /opt/threat-intel/env/bin/activate
 
-echo "Creating Python virtual environment..."
-python3 -m venv /opt/threat-intel/env
-source /opt/threat-intel/env/bin/activate
-
-echo "Installing Python dependencies..."
-pip install -r requirements-threat-intel.txt
+#echo "Installing Python dependencies..."
+#pip install -r requirements-threat-intel.txt
 
 echo "Setting up Docker for Threat Intelligence Services..."
 cat <<EOF > /opt/threat-intel/docker-compose.yml

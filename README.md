@@ -6,16 +6,17 @@ This project involves setting up an incident response platform using Docker, Vir
 1. [Project Overview](#project-overview)
 2. [Requirements](#requirements)
 3. [Architecture](#architecture)
+   - [Network Setup](#network-setup)
 4. [Setup Instructions](#setup-instructions)
+   - [Prerequisites](#prerequisites)
    - [VM Configuration](#vm-configuration)
    - [Network Configuration](#network-configuration)
    - [Environment Setup](#environment-setup)
-5. [Platform Components](#platform-components)
-   - [SIEM Stack (ELK)](#siem-stack-elk)
-   - [Threat Intelligence Integration](#threat-intelligence-integration)
-   - [Automation Scripts](#automation-scripts)
-6. [Testing & Usage](#testing--usage)
-7. [Future Enhancements](#future-enhancements)
+5. [Integration](#integration)
+   - [Threat Intelligence with ELK](#threat-intelligence-with-elk)
+   - [Incident Response Automation](#incident-response-automation)
+6. [Testing & Validation](#testing--validation)
+
 
 ---
 
@@ -70,13 +71,13 @@ All VMs are connected to an internal network (`AIRTIP-Net`) configured with DHCP
 
 ### Network Configuration
 
-#### Step 1: Configure VMs for Internet Access
+#### **Step 1: Configure VMs for Internet Access**
 
 1. **Attach a NAT Network Adapter to each VM**
     - Open the VirtualBox settings for each VM.
     - Under the Network tab, ensure the first adapter is set to NAT for internet access.
 
-#### Step 2: Create and Configure an Internal Network
+#### **Step 2: Create and Configure an Internal Network**
 
 1. **Create an Internal Network in VirtualBox**
     - Open File > Host Network Manager in VirtualBox.
@@ -106,72 +107,15 @@ All VMs are connected to an internal network (`AIRTIP-Net`) configured with DHCP
    ssh adrino@192.168.56.8
    ```
 2. **Setup the ELK VM:**
-- **Clone the Repository**
-   ```bash
-   git clone https://github.com/Adrin0/ELK-SIEM
-   cd ELK-SIEM
-   ```
-- **Run the setup script**
-   ```bash
-   chmod +x setup-ELK.sh
-   ./setup-ELK.sh
-   ```   
-- **Verify Services**
-    - Kibana: http://<ELK_VM_IP>:5601
-    - Elasticsearch: http://<ELK_VM_IP>:9200
+- [ELK Machine Setup](ELK/README.md): Instructions for configuring Elasticsearch, Logstash, and Kibana.
 
 3. **Setup the Threat Intelligence VM:**
-- **Clone the Repository**
-   ```bash
-   git clone https://github.com/Adrin0/ELK-SIEM
-   cd ELK-SIEM
-   ```
-- **Run the setup script**
-   ```bash
-   chmod +x setup-threat-intel.sh
-   ./setup-threat-intel.sh
-   ```   
-- **Obtain API keys for AbuseIPDB and VirutsTotal and store them in .env**
-    1. AbuseIPDB API Key:
-    - Go to the AbuseIPDB website.
-    - Create an account or log in.
-    - Navigate to your API Keys section under account settings.
-    - Generate an API key.
+- [Threat Intelligence Machine Setup](ThreatIntel/README.md): Instructions for setting up threat intelligence and automation services.
 
-    2. VirusTotal API Key:
-    - Visit VirusTotal.
-    - Sign up or log in to your account.
-    - Go to your profile settings and find the API Key section.
-    - Copy the API key provided.
-    
-    3. Create a .env File:
-    ```
-    cd /opt/threat-intel
-    nano .env
-    ```
-    4. Add API Keys to File:
-    ```env
-    ABUSEIPDB_API_KEY=your_abuseipdb_api_key
-    VIRUSTOTAL_API_KEY=your_virustotal_api_key
-    ```
-    5. Verify Configuration:
-    - Restart the Docker services to apply the changes:
-    ```bash
-    cd /opt/threat-intel
-    docker-compose down
-    docker-compose up -d
-    ```
-    6. Verify Environment Variables
-    - Check that containers are running correctly:
-    ```bash
-    docker ps
-    ```
-    - Ensure API keys are used properly by testing threat_intel.py service:
-    ```bash
-    curl -X POST -H "Content-Type: application/json" -d '{"ip": "8.8.8.8"}' http://localhost:5000/enrich
-    ```
+Ensure each setup is completed in its respective environment before proceeding with integration.
+
 4. **Integrate Threat Intelligence with ELK**
-- Update the ELK Stack's Logstash configuration to include enriched data from the threat intelligence services. Modify /etc/logstash/conf.d/logstash.conf on the ELK VM:
+- Update the ELK Stack's Logstash configuration to include enriched data from the threat intelligence services. Modify /ELK/config/logstash.conf on the ELK VM:
     ```conf
         filter {
     if [source] =~ /logs/ {

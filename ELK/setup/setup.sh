@@ -95,4 +95,4 @@ EOF
 echo "Starting Docker-based ELK stack..."
 cd /opt/elk && sudo docker-compose up -d
 
-echo "Setup complete! Access Kibana at http://<VM_IP>:5601"
+echo "Setup complete! Access Kibana at http://<VM_IP>:5602"

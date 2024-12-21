@@ -2,7 +2,8 @@ version: '3.7'
 
 services:
   abuseipdb:
-    image: your-abuseipdb-image
+    build:
+      context: ./abuseipdb
     container_name: abuseipdb
     environment:
       - API_KEY=YOUR_ABUSEIPDB_API_KEY
@@ -10,7 +11,8 @@ services:
       - "8080:8080"
 
   virustotal:
-    image: your-virustotal-image
+    build:
+      context: ./virustotal
     container_name: virustotal
     environment:
       - API_KEY=YOUR_VIRUSTOTAL_API_KEY
@@ -18,7 +20,8 @@ services:
       - "8081:8081"
 
   automation:
-    image: your-automation-scripts-image
+    build:
+      context: ./automation
     container_name: automation
     volumes:
       - ./scripts:/scripts
