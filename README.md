@@ -52,10 +52,17 @@ All VMs are connected to an internal network (`AIRTIP-Net`) configured with DHCP
 ## Setup Instructions
 
 ### Prerequisites
-1. Install **VirtualBox**.
-2. Download VM images:
-   - [Ubuntu Server](https://ubuntu.com/download/server)
-   - [Kali Linux](https://www.kali.org/get-kali/#kali-virtual-machines)
+- **Oracle VirtualBox**: For VM management.
+- **Ubuntu Server**: For ELK Stack and Threat Intelligence VMs.
+- **Kali Linux**: For attack simulation.
+- **Docker & Docker Compose**: To run containerized services.
+
+### Steps to Deploy
+### VM Configuration
+**Download VM Images**
+
+- [Ubuntu Server](https://ubuntu.com/download/server)
+- [Kali Linux](https://www.kali.org/get-kali/#kali-virtual-machines)
 
 ### VM Configuration
 1. **Resources**:
@@ -151,10 +158,3 @@ Ensure each setup is completed in its respective environment before proceeding w
     sudo filebeat test config        #Validate the configuration to ensure no error
 
     ```
-    
-## Testing & Validation
-
-- Access Kibana: `http://<ELK_VM_IP>:5602`
-- Verify Threat Intel API integration:
-```bash
-curl -X POST -H "Content-Type: application/json" -d '{"ip": "8.8.8.8"}' http://localhost:5000/enrich
